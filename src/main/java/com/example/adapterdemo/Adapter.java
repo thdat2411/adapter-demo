@@ -17,12 +17,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 public class Adapter {
@@ -32,9 +35,11 @@ public class Adapter {
 
     @Component
     public static class FFmpegAdapter implements VideoToAudioConverterAdapter {
+        private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         @Override
         public void convertVideoToAudio(String inputVideoFilePath, String outputAudioFilePath) throws ConversionException {
+            executor.execute(() -> {
             try {
                 // Create FFmpeg process
                 ProcessBuilder processBuilder = new ProcessBuilder(
@@ -47,7 +52,7 @@ public class Adapter {
 
                 // Wait for process to finish
                 int exitCode = process.waitFor();
-
+                InputStream inputStream = process.getInputStream();
                 // Check if process terminated successfully
                 if (exitCode != 0) {
                     System.out.println(exitCode);
@@ -58,7 +63,7 @@ public class Adapter {
             } catch (IOException |InterruptedException e ) {
                 throw new RuntimeException(e);
             }
-
+            });
         }
     }
 
