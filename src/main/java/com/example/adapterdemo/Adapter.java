@@ -74,14 +74,13 @@ public class Adapter {
             int lastIndex = Objects.requireNonNull(videoFile.getOriginalFilename()).lastIndexOf('.');
             String customAudioDirectoryName = "\\src\\main\\resources\\music\\";
             String customAudioFileName = videoFile.getOriginalFilename().substring(0, lastIndex) + "Audio.mp3";
+            File customAudioPath = new File(currentDirectory + customAudioDirectoryName);
+            if (!customAudioPath.exists()) {
+                customAudioPath.mkdir();
+            }
             File customAudioFile = new File(currentDirectory + customAudioDirectoryName+ customAudioFileName);
-
             if(videoFile.getOriginalFilename().contains("mp4")) {
                 String customVideoFileName = videoFile.getOriginalFilename().substring(0, lastIndex) + "Video.mp4";
-                File customVideoPath = new File(currentDirectory + customAudioDirectoryName);
-                if (!customVideoPath.exists()) {
-                    customVideoPath.mkdir();
-                }
                 File customVideoFile = new File(currentDirectory + customAudioDirectoryName + customVideoFileName);
                 videoFile.transferTo(customVideoFile);
                 converterAdapter.convertVideoToAudio(customVideoFile.getAbsolutePath(), customAudioFile.getAbsolutePath());
