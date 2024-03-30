@@ -22,15 +22,15 @@
 <form class="form" th:action="@{/upload}" method="post" enctype="multipart/form-data">
     <span class="form-title">File Conversion Demo</span>
     <p class="form-paragraph">
-        File should be audio
+        File should be audio or video
     </p>
     <label for="file-input" class="drop-container">
         <span class="drop-title">Drop files here</span>
         or
-        <input type="file" accept="mp4/*" required="" id="file-input" name="file">
+        <input type="file" accept="audio/*, video/*" required="" id="file-input" name="file">
     </label>
     <button class="button" type="submit">
-        Convert
+        Play
         <svg fill="currentColor" viewBox="0 0 24 24" class="icon">
             <path
                     clip-rule="evenodd"
@@ -41,7 +41,10 @@
     </button>
     <div th:if="${message}">
     <p th:text="${message}"></p>
-        <p th:text="'Path: '+${audioFilePath}"></p>
+        <audio controls>
+            <source th:src="@{'audio?audioFilePath='+ ${audioFilePath.replace('\\', '/')}}" type="audio/mpeg">
+            Your browser does not support the audio tag.
+        </audio>
     </div>
 </form>
 </body>
